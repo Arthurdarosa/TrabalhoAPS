@@ -6,7 +6,7 @@ from fila import Fila
 
 class Leitor(Usuario):
     """Um usuário que pode emprestar, reservar e avaliar livros."""
-    def __init__(self, nome: str, email: str, senha: str):
+    def __init__(self, nome: str, email: str, CPF: int, senha: str):
         super().__init__(nome, email, senha, tipo='Leitor')
         self.__livros_emprestados: List[Emprestimo] = []
         self.__fila_de_espera: List[Fila] = [] # Alterado de 'reservas' para 'fila_de_espera'
