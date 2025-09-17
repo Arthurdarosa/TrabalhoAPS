@@ -3,6 +3,7 @@ import tkinter as tk
 from views.tela_cadastrar_livro import TelaCadastrarLivro
 from views.tela_gerenciar_usuarios import TelaGerenciarUsuarios
 from views.tela_emprestimos_admin import TelaEmprestimosAdmin
+from views.tela_gerenciar_livros import TelaGerenciarLivros
 
 def centralizar_janela(janela):
     # (função de centralizar aqui)
@@ -22,10 +23,10 @@ class TelaAdmin(tk.Tk):
         tk.Label(self, text="Painel do Administrador", font=('Helvetica', 18)).pack(pady=20)
         tk.Label(self, text=f"Logado como: {nome_admin}").pack(pady=5)
         
-        # --- BOTÕES ATUALIZADOS com os comandos ---
+
         tk.Button(self, text="Cadastrar Livro", width=25, height=2, command=self.abrir_tela_cadastro_livro).pack(pady=5)
+        tk.Button(self, text="gerenciar Livro", width=25, height=2, command=self.abrir_tela_gerenciar_livros).pack(pady=5)
         tk.Button(self, text="Gerenciar Usuários", width=25, height=2, command=self.abrir_tela_gerenciar_usuarios).pack(pady=5)
-        # --- NOVO BOTÃO ---
         tk.Button(self, text="Gerenciar Empréstimos", width=25, height=2, command=self.abrir_tela_emprestimos).pack(pady=5)
         
         tk.Button(self, text="Logout", command=self.destroy).pack(side=tk.BOTTOM, pady=20)
@@ -43,3 +44,7 @@ class TelaAdmin(tk.Tk):
     def abrir_tela_emprestimos(self):
         tela_emprestimos = TelaEmprestimosAdmin(self)
         self.wait_window(tela_emprestimos)
+
+    def abrir_tela_gerenciar_livros(self):
+        tela_livros = TelaGerenciarLivros(self)
+        self.wait_window(tela_livros)
