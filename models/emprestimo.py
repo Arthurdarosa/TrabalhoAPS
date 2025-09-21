@@ -18,7 +18,7 @@ class Emprestimo:
         self.__data_devolucao_prevista = self.__data_emprestimo + timedelta(days=14)
         
         # O status inicial é sempre "Ativo"
-        self.status = "Ativo"
+        self.estado = "busca pendente"
 
     # --- Properties (Getters) ---
     @property

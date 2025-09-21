@@ -1,11 +1,11 @@
 class Usuario:
     """Classe base que representa um usuário do sistema."""
-    def __init__(self, nome: str, email: str, CPF: int, senha: str, tipo: str):
+    def __init__(self, nome: str, email: str, CPF: int, senha: str, telefone: int):
         self.nome = nome
         self.email = email
         self.CPF = CPF
         self.__senha_hash = self._gerar_hash(senha)
-        self.tipo = tipo
+        self.telefone = telefone
 
     @property
     def nome(self) -> str:
