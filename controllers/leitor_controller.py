@@ -25,11 +25,13 @@ class LeitorController:
                 with open(self.arquivo_dados, 'r', encoding='utf-8') as f:
                     dados = json.load(f)
                     for leitor_data in dados:
+                        senha_salva = leitor_data.get('senha') or ''
+                        senha_para_instanciar = senha_salva if isinstance(senha_salva, str) and len(senha_salva) >= 6 else 'placeholder123'
                         leitor = Leitor(
                             nome=leitor_data['nome'],
                             email=leitor_data['email'],
                             CPF=leitor_data['CPF'],
-                            senha=leitor_data['senha'],  # Será re-hashada
+                            senha=senha_para_instanciar,
                             telefone=leitor_data['telefone']
                         )
                         # Restaurar o hash original
@@ -153,3 +155,72 @@ class LeitorController:
     def listar_leitores(self) -> List[Leitor]:
         """Retorna lista de todos os leitores."""
         return self.leitores.copy()
+
+    # --- Novas operações: atualizar e excluir ---
+    def atualizar_leitor(
+        self,
+        email_original: str,
+        *,
+        nome: Optional[str] = None,
+        email: Optional[str] = None,
+        telefone: Optional[str | int] = None,
+        senha: Optional[str] = None,
+    ) -> tuple[bool, str]:
+        """
+        Atualiza dados de um leitor identificado pelo email_original.
+        Campos None não são alterados. Senha vazia ("") também não altera.
+        Retorna (sucesso, mensagem).
+        """
+        try:
+            leitor = self.buscar_leitor_por_email(email_original)
+            if not leitor:
+                return False, "Leitor não encontrado."
+
+            # Nome
+            if nome is not None:
+                nome_limpo = nome.strip()
+                if not nome_limpo:
+                    return False, "Nome é obrigatório."
+                leitor.nome = nome_limpo
+
+            # Email
+            if email is not None and email.strip().lower() != email_original.strip().lower():
+                if not self.validar_email(email):
+                    return False, "Email inválido."
+                if self.email_ja_existe(email):
+                    return False, "Email já cadastrado."
+                leitor.email = email.strip()
+
+            # Telefone
+            if telefone is not None:
+                telefone_str = str(telefone)
+                telefone_int = int(''.join(filter(str.isdigit, telefone_str)))
+                leitor.telefone = telefone_int
+
+            # Senha (opcional)
+            if senha is not None and senha != "":
+                if len(senha) < 6:
+                    return False, "Senha deve ter pelo menos 6 caracteres."
+                # Regerar hash através do construtor privado
+                # Truque: criar um hash novo usando o método de verificação
+                # Não há setter público, então reaproveitamos a lógica da classe base
+                leitor._Usuario__senha_hash = leitor._gerar_hash(senha)
+
+            self._salvar_leitores()
+            return True, "Leitor atualizado com sucesso!"
+        except ValueError as e:
+            return False, f"Erro de validação: {str(e)}"
+        except Exception as e:
+            return False, f"Erro interno: {str(e)}"
+
+    def excluir_leitor_por_email(self, email: str) -> tuple[bool, str]:
+        """Exclui um leitor pelo email. Retorna (sucesso, mensagem)."""
+        try:
+            for i, leitor in enumerate(self.leitores):
+                if leitor.email.lower() == email.lower():
+                    del self.leitores[i]
+                    self._salvar_leitores()
+                    return True, "Leitor excluído com sucesso!"
+            return False, "Leitor não encontrado."
+        except Exception as e:
+            return False, f"Erro interno: {str(e)}"

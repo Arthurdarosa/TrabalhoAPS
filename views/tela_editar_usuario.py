@@ -14,7 +14,7 @@ class TelaEditarUsuario(tk.Toplevel):
     def __init__(self, parent, dados_usuario: dict):
         super().__init__(parent)
         self.title(f"Editando Usuário: {dados_usuario['email']}")
-        self.geometry("400x200")
+        self.geometry("450x260")
         
         self.dados_atualizados = None
 
@@ -30,19 +30,19 @@ class TelaEditarUsuario(tk.Toplevel):
         self.entry_email = tk.Entry(frame_form, width=40)
         self.entry_email.grid(row=1, column=1)
 
-        tk.Label(frame_form, text="senha:").grid(row=2, column=0, sticky='w', pady=5)
-        self.entry_senha = tk.Entry(frame_form, width=40)
+        tk.Label(frame_form, text="Senha (opcional):").grid(row=2, column=0, sticky='w', pady=5)
+        self.entry_senha = tk.Entry(frame_form, width=40, show='*')
         self.entry_senha.grid(row=2, column=1)
 
-        tk.Label(frame_form, text="telefone:").grid(row=3, column=0, sticky='w', pady=5)
+        tk.Label(frame_form, text="Telefone:").grid(row=3, column=0, sticky='w', pady=5)
         self.entry_telefone = tk.Entry(frame_form, width=40)
         self.entry_telefone.grid(row=3, column=1)
 
         # Preenchendo com os dados atuais
         self.entry_nome.insert(0, dados_usuario['nome'])
         self.entry_email.insert(0, dados_usuario['email'])
-        self.entry_senha.insert(0, dados_usuario['senha'])
-        self.entry_telefone.insert(0, dados_usuario['telefone'])
+        # Não preencher senha. Deixar vazio para manter a atual
+        self.entry_telefone.insert(0, dados_usuario.get('telefone', ''))
         # Botões
         frame_botoes = tk.Frame(self)
         frame_botoes.pack(pady=10)
@@ -54,12 +54,23 @@ class TelaEditarUsuario(tk.Toplevel):
         self.grab_set()
         
     def salvar(self):
-        # --- LÓGICA SIMULADA ---
-        novos_dados = {
-            'nome': self.entry_nome.get(),
-            'email': self.entry_email.get(),
-            'tipo': 'Leitor' # Em um sistema real, você não mudaria o tipo aqui
+        nome = self.entry_nome.get().strip()
+        email = self.entry_email.get().strip()
+        senha = self.entry_senha.get()
+        telefone = self.entry_telefone.get().strip()
+
+        if not nome:
+            messagebox.showerror("Erro", "Nome é obrigatório!")
+            return
+        if not email:
+            messagebox.showerror("Erro", "Email é obrigatório!")
+            return
+
+        self.dados_atualizados = {
+            'nome': nome,
+            'email': email,
+            'telefone': telefone,
+            'senha': senha,  # pode ser vazio para manter
         }
-        self.dados_atualizados = novos_dados
         messagebox.showinfo("Sucesso", "Usuário atualizado com sucesso!")
         self.destroy()

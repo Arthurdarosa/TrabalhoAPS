@@ -1,10 +1,10 @@
 [
   {
-    "nome": "art",
-    "email": "abc@gmail.com",
-    "CPF": 10280283938,
+    "nome": "arthur",
+    "email": "abc@a.com",
+    "CPF": 90313373078,
     "senha": "***",
-    "senha_hash": "hashed_abcdef_salt",
+    "senha_hash": "hashed_123456789_salt",
     "telefone": 48920008692
   }
 ]
