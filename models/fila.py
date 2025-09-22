@@ -1,8 +1,8 @@
 from __future__ import annotations
 from datetime import datetime
 from typing import List
-from livro import Livro
-from leitor import Leitor
+from .livro import Livro
+from .leitor import Leitor
 
 class Fila:    
     def __init__(self, livro: Livro):

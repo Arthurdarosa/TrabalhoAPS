@@ -1,7 +1,7 @@
 from __future__ import annotations
 from datetime import datetime, timedelta
-from livro import Livro
-from leitor import Leitor
+from .livro import Livro
+from .leitor import Leitor
 
 class Emprestimo:
     """

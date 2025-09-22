@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import List
-from avaliacao import Avaliacao
-from fila import Fila
+from .avaliacao import Avaliacao
+from .fila import Fila
 
 class Livro:
     """Representa um livro no acervo da biblioteca."""

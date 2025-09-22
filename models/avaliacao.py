@@ -1,7 +1,7 @@
 from __future__ import annotations
 from datetime import datetime
-from leitor import Leitor
-from livro import Livro
+from .leitor import Leitor
+from .livro import Livro
 
 class Avaliacao:
     """

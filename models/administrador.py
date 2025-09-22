@@ -1,4 +1,4 @@
-from usuario import Usuario
+from .usuario import Usuario
 
 class Administrador(Usuario):
     """Um usuário com privilégios de administrador."""

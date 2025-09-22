@@ -18,7 +18,38 @@ class Usuario:
         else:
             raise ValueError("Nome deve ser uma string não vazia.")
 
-    # ... (outros getters e setters para email, tipo, e a propriedade de senha_hash) ...
+    @property
+    def email(self) -> str:
+        return self.__email
+        
+    @email.setter
+    def email(self, email: str):
+        if isinstance(email, str) and email.strip() and "@" in email:
+            self.__email = email
+        else:
+            raise ValueError("Email deve ser uma string válida.")
+
+    @property
+    def CPF(self) -> int:
+        return self.__CPF
+        
+    @CPF.setter
+    def CPF(self, CPF: int):
+        if isinstance(CPF, int) and CPF > 0:
+            self.__CPF = CPF
+        else:
+            raise ValueError("CPF deve ser um número inteiro positivo.")
+
+    @property
+    def telefone(self) -> int:
+        return self.__telefone
+        
+    @telefone.setter
+    def telefone(self, telefone: int):
+        if isinstance(telefone, int) and telefone > 0:
+            self.__telefone = telefone
+        else:
+            raise ValueError("Telefone deve ser um número inteiro positivo.")
 
     def _gerar_hash(self, senha: str) -> str:
         if isinstance(senha, str) and len(senha) >= 6:
