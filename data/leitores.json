@@ -1,10 +1,37 @@
 [
   {
-    "nome": "arthur",
-    "email": "abc@a.com",
-    "CPF": 90313373078,
-    "senha": "***",
-    "senha_hash": "hashed_123456789_salt",
+    "nome": "a1",
+    "email": "a@abrga.com",
+    "CPF": 45970638030,
+    "senha_hash": "hashed_123456_salt",
     "telefone": 48920008692
+  },
+  {
+    "nome": "João Silva",
+    "email": "joao@teste.com",
+    "CPF": 11144477735,
+    "senha_hash": "hashed_minhasenha123_salt",
+    "telefone": 11999999988
+  },
+  {
+    "nome": "aaa",
+    "email": "abcded@a.com",
+    "CPF": 49668335074,
+    "senha_hash": "hashed_afffff_salt",
+    "telefone": 482456
+  },
+  {
+    "nome": "arthur",
+    "email": "abaorubgaro@a.com",
+    "CPF": 9428030945,
+    "senha_hash": "hashed_aaaaaa_salt",
+    "telefone": 3927749
+  },
+  {
+    "nome": "testea",
+    "email": "teste@teste.coma",
+    "CPF": 12253248908,
+    "senha_hash": "hashed_111111_salt",
+    "telefone": 1111
   }
 ]

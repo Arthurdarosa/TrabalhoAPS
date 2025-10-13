@@ -25,20 +25,19 @@ class LeitorController:
                 with open(self.arquivo_dados, 'r', encoding='utf-8') as f:
                     dados = json.load(f)
                     for leitor_data in dados:
-                        senha_salva = leitor_data.get('senha') or ''
-                        senha_para_instanciar = senha_salva if isinstance(senha_salva, str) and len(senha_salva) >= 6 else 'placeholder123'
-                        leitor = Leitor(
-                            nome=leitor_data['nome'],
-                            email=leitor_data['email'],
-                            CPF=leitor_data['CPF'],
-                            senha=senha_para_instanciar,
-                            telefone=leitor_data['telefone']
-                        )
-                        # Restaurar o hash original
-                        leitor._Usuario__senha_hash = leitor_data['senha_hash']
-                        self.leitores.append(leitor)
-            except (json.JSONDecodeError, KeyError, ValueError) as e:
-                print(f"Erro ao carregar leitores: {e}")
+                        try:
+                            leitor = Leitor.from_stored_data(
+                                nome=leitor_data['nome'],
+                                email=leitor_data['email'],
+                                CPF=leitor_data['CPF'],
+                                senha_hash=leitor_data['senha_hash'],
+                                telefone=leitor_data['telefone']
+                            )
+                            self.leitores.append(leitor)
+                        except (KeyError, ValueError) as e_item:
+                            print(f"Registro de leitor inválido ignorado: {e_item}")
+            except (json.JSONDecodeError, OSError) as e:
+                print(f"Erro ao carregar arquivo de leitores: {e}")
                 self.leitores = []
     
     def _salvar_leitores(self):
@@ -50,7 +49,6 @@ class LeitorController:
                     'nome': leitor.nome,
                     'email': leitor.email,
                     'CPF': leitor.CPF,
-                    'senha': '***',  # Não salvar senha em texto plano
                     'senha_hash': leitor._Usuario__senha_hash,
                     'telefone': leitor.telefone
                 })
@@ -156,7 +154,6 @@ class LeitorController:
         """Retorna lista de todos os leitores."""
         return self.leitores.copy()
 
-    # --- Novas operações: atualizar e excluir ---
     def atualizar_leitor(
         self,
         email_original: str,

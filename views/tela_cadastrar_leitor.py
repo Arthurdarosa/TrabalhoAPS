@@ -18,7 +18,7 @@ class TelaCadastrarLeitor(tk.Toplevel):
         super().__init__(parent)
         self.parent = parent
         self.controller = LeitorController()
-        self.leitor_temporario = None  # Armazena dados temporariamente
+        self.leitor_temporario = None 
         
         self.title("Cadastrar Leitor")
         self.geometry("500x700")
@@ -32,28 +32,23 @@ class TelaCadastrarLeitor(tk.Toplevel):
     
     def criar_interface(self):
         """Cria a interface da tela."""
-        # Título
         titulo = tk.Label(self, text="Cadastrar Novo Leitor", 
                          font=('Helvetica', 16, 'bold'))
         titulo.pack(pady=20)
         
-        # Frame principal
         frame_principal = tk.Frame(self)
         frame_principal.pack(pady=10, padx=20, fill='both', expand=True)
         
-        # Nome
         tk.Label(frame_principal, text="Nome Completo:", 
                 font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
         self.entry_nome = tk.Entry(frame_principal, width=40, font=('Helvetica', 10))
         self.entry_nome.pack(anchor='w', pady=(0, 10))
         
-        # Email
         tk.Label(frame_principal, text="Email:", 
                 font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
         self.entry_email = tk.Entry(frame_principal, width=40, font=('Helvetica', 10))
         self.entry_email.pack(anchor='w', pady=(0, 10))
-        
-        # CPF
+
         tk.Label(frame_principal, text="CPF:", 
                 font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
         self.entry_cpf = tk.Entry(frame_principal, width=40, font=('Helvetica', 10))
@@ -61,7 +56,6 @@ class TelaCadastrarLeitor(tk.Toplevel):
         tk.Label(frame_principal, text="(Digite apenas números ou com formatação: 000.000.000-00)", 
                 font=('Helvetica', 8), fg='gray').pack(anchor='w', pady=(0, 10))
         
-        # Telefone
         tk.Label(frame_principal, text="Telefone:", 
                 font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
         self.entry_telefone = tk.Entry(frame_principal, width=40, font=('Helvetica', 10))
@@ -69,7 +63,6 @@ class TelaCadastrarLeitor(tk.Toplevel):
         tk.Label(frame_principal, text="(Digite apenas números ou com formatação: (00) 00000-0000)", 
                 font=('Helvetica', 8), fg='gray').pack(anchor='w', pady=(0, 10))
         
-        # Senha
         tk.Label(frame_principal, text="Senha:", 
                 font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
         self.entry_senha = tk.Entry(frame_principal, width=40, show="*", font=('Helvetica', 10))
@@ -77,26 +70,21 @@ class TelaCadastrarLeitor(tk.Toplevel):
         tk.Label(frame_principal, text="(Mínimo 6 caracteres)", 
                 font=('Helvetica', 8), fg='gray').pack(anchor='w', pady=(0, 10))
         
-        # Confirmar Senha
         tk.Label(frame_principal, text="Confirmar Senha:", 
                 font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
         self.entry_confirmar_senha = tk.Entry(frame_principal, width=40, show="*", font=('Helvetica', 10))
         self.entry_confirmar_senha.pack(anchor='w', pady=(0, 20))
         
-        # Botões diretamente na janela principal
-        # Botão Confirmar
         btn_confirmar = tk.Button(self, text="Confirmar", 
                                  command=self.confirmar_dados, width=15, height=2,
                                  bg='#4CAF50', fg='white', font=('Helvetica', 10, 'bold'))
         btn_confirmar.pack(side=tk.LEFT, padx=10, pady=20)
         
-        # Botão Limpar
         btn_limpar = tk.Button(self, text="Limpar", 
                               command=self.limpar_campos, width=15, height=2,
                               bg='#FF9800', fg='white', font=('Helvetica', 10, 'bold'))
         btn_limpar.pack(side=tk.LEFT, padx=10, pady=20)
-        
-        # Botão Voltar
+
         btn_voltar = tk.Button(self, text="Voltar", 
                               command=self.fechar, width=15, height=2,
                               bg='#f44336', fg='white', font=('Helvetica', 10, 'bold'))
@@ -109,7 +97,7 @@ class TelaCadastrarLeitor(tk.Toplevel):
     
     def confirmar_dados(self):
         """Valida e armazena temporariamente os dados do leitor."""
-        # Coleta dados dos campos
+
         nome = self.entry_nome.get().strip()
         email = self.entry_email.get().strip()
         cpf = self.entry_cpf.get().strip()
@@ -117,7 +105,7 @@ class TelaCadastrarLeitor(tk.Toplevel):
         senha = self.entry_senha.get()
         confirmar_senha = self.entry_confirmar_senha.get()
         
-        # Validações básicas
+
         if not nome:
             messagebox.showerror("Erro", "Nome é obrigatório!")
             self.entry_nome.focus()
@@ -148,7 +136,7 @@ class TelaCadastrarLeitor(tk.Toplevel):
             self.entry_confirmar_senha.focus()
             return
         
-        # Validações do controller
+
         if not self.controller.validar_email(email):
             messagebox.showerror("Erro", "Email inválido!")
             self.entry_email.focus()
@@ -168,8 +156,7 @@ class TelaCadastrarLeitor(tk.Toplevel):
             messagebox.showerror("Erro", "CPF já cadastrado!")
             self.entry_cpf.focus()
             return
-        
-        # Armazena dados temporariamente
+
         self.leitor_temporario = {
             'nome': nome,
             'email': email,
@@ -240,10 +227,10 @@ class TelaConfirmacaoLeitor(tk.Toplevel):
         
         # Exibir dados do leitor
         dados_texto = f"""
-Nome: {self.dados_leitor['nome']}
-Email: {self.dados_leitor['email']}
-CPF: {self.dados_leitor['cpf']}
-Telefone: {self.dados_leitor['telefone']}
+        Nome: {self.dados_leitor['nome']}
+        Email: {self.dados_leitor['email']}
+        CPF: {self.dados_leitor['cpf']}
+        Telefone: {self.dados_leitor['telefone']}
         """
         
         tk.Label(frame_dados, text=dados_texto, 

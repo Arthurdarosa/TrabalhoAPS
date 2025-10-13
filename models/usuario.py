@@ -6,6 +6,16 @@ class Usuario:
         self.CPF = CPF
         self.__senha_hash = self._gerar_hash(senha)
         self.telefone = telefone
+    
+    @classmethod
+    def from_stored_data(cls, nome: str, email: str, CPF: int, senha_hash: str, telefone: int):
+        usuario = cls.__new__(cls) 
+        usuario.nome = nome
+        usuario.email = email
+        usuario.CPF = CPF
+        usuario.__senha_hash = senha_hash 
+        usuario.telefone = telefone
+        return usuario
 
     @property
     def nome(self) -> str:
