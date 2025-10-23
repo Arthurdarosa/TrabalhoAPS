@@ -1,5 +1,6 @@
 from __future__ import annotations
 from datetime import datetime, timedelta
+from estado import StatusEmprestimo
 from .livro import Livro
 from .leitor import Leitor
 
@@ -9,16 +10,14 @@ class Emprestimo:
     Valida os tipos de dados e encapsula o estado.
     """
     def __init__(self, livro: Livro, leitor: Leitor):
-        # Usamos os setters no construtor para garantir a validação na criação do objeto
         self.livro = livro
         self.leitor = leitor
         
-        # Atributos de data são definidos na criação e não devem ser alterados externamente
         self.__data_emprestimo = datetime.now()
         self.__data_devolucao_prevista = self.__data_emprestimo + timedelta(days=14)
         
-        # O status inicial é sempre "Ativo"
-        self.estado = "pendente"
+        # O status inicial agora usa o Enum
+        self.status = StatusEmprestimo.PENDENTE
 
     # --- Properties (Getters) ---
     @property
@@ -38,7 +37,7 @@ class Emprestimo:
         return self.__data_devolucao_prevista
 
     @property
-    def status(self) -> str:
+    def status(self) -> StatusEmprestimo:  # <-- Tipo de retorno atualizado
         return self.__status
 
     # --- Setters com Validação ---
@@ -55,27 +54,30 @@ class Emprestimo:
         self.__leitor = leitor
             
     @status.setter
-    def status(self, status: str):
-        allowed_statuses = ["Ativo", "Atrasado", "Devolvido", "pendente"]
-        if isinstance(status, str) and status in allowed_statuses:
-            self.__status = status
-        else:
-            raise ValueError(f"Status inválido. Permitidos: {allowed_statuses}")
+    def status(self, status: StatusEmprestimo): # <-- Tipo de entrada atualizado
+        # A validação agora é muito mais simples e segura
+        if not isinstance(status, StatusEmprestimo):
+            raise TypeError("Status deve ser um membro de StatusEmprestimo Enum.")
+        self.__status = status
             
     # --- Métodos de Domínio (Lógica de Negócio) ---
     def registrar_devolucao(self):
         """
         Muda o status do empréstimo para 'Devolvido'.
-        Este método de negócio usa o setter para garantir a regra de validação.
         """
         print(f"INFO: Registrando devolução de '{self.livro.titulo}' por '{self.leitor.nome}'.")
-        self.status = "Devolvido"
+        # Usando o Enum
+        self.status = StatusEmprestimo.DEVOLVIDO
 
     def verificar_atraso(self) -> bool:
         """
         Verifica se o empréstimo está atrasado e atualiza o status se necessário.
         """
-        if self.status == "Ativo" and datetime.now() > self.data_devolucao_prevista:
-            self.status = "Atrasado"
+        # Comparação usando o Enum
+        # (Mantendo a lógica que discutimos: só fica atrasado se estava Ativo)
+        if self.status == StatusEmprestimo.ATIVO and datetime.now() > self.data_devolucao_prevista:
+            self.status = StatusEmprestimo.ATRASADO
             return True
-        return self.status == "Atrasado"
+        
+        # Verificação usando o Enum
+        return self.status == StatusEmprestimo.ATRASADO
