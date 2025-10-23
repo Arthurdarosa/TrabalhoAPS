@@ -1,11 +1,11 @@
 import tkinter as tk
 from views.tela_cadastrar_livro import TelaCadastrarLivro
-from views.tela_emprestimos_admin import TelaEmprestimosAdmin
+from views.tela_devolver_emprestimo import TelaDevolverEmprestimo
 from views.tela_gerenciar_livros import TelaGerenciarLivros
-# --- Importando as novas telas de gerenciamento ---
 from views.tela_gerenciar_leitores import TelaGerenciarLeitores
 from views.tela_gerenciar_admins import TelaGerenciarAdmins
 from views.tela_relatorios import TelaRelatorios
+from views.tela_cadastrar_leitor import TelaCadastrarLeitor
 
 def centralizar_janela(janela):
     # (função de centralizar aqui)
@@ -29,8 +29,8 @@ class TelaAdmin(tk.Tk):
         tk.Button(self, text="Editar Livros", width=25, height=2, command=self.abrir_tela_gerenciar_livros).pack(pady=5)
         tk.Button(self, text="Gerenciar Leitores", width=25, height=2, command=self.abrir_tela_gerenciar_leitores).pack(pady=5)
         tk.Button(self, text="Gerenciar Administradores", width=25, height=2, command=self.abrir_tela_gerenciar_admins).pack(pady=5)
-        
-        tk.Button(self, text="Gerenciar Empréstimos", width=25, height=2, command=self.abrir_tela_emprestimos).pack(pady=5)
+        tk.Button(self, text="Cadastrar leitor", width=25, height=2, command=self.cadastrar).pack(pady=5)
+        tk.Button(self, text="devolução de Empréstimos", width=25, height=2, command=self.abrir_tela_emprestimos_devolucao).pack(pady=5)
         tk.Button(self, text="Gerar Relatórios", width=25, height=2, command=self.abrir_tela_relatorios).pack(pady=5)
 
         tk.Button(self, text="Logout", command=self.destroy).pack(side=tk.BOTTOM, pady=20)
@@ -41,8 +41,8 @@ class TelaAdmin(tk.Tk):
         self.wait_window(TelaCadastrarLivro(self))
     def abrir_tela_gerenciar_livros(self):
         self.wait_window(TelaGerenciarLivros(self))
-    def abrir_tela_emprestimos(self):
-        self.wait_window(TelaEmprestimosAdmin(self))
+    def abrir_tela_emprestimos_devolucao(self):
+        self.wait_window(TelaDevolverEmprestimo(self))
 
     # --- NOVOS MÉTODOS ---
     def abrir_tela_gerenciar_leitores(self):
@@ -53,3 +53,7 @@ class TelaAdmin(tk.Tk):
     def abrir_tela_relatorios(self):
         tela_relatorios = TelaRelatorios(self)
         self.wait_window(tela_relatorios)
+
+    def cadastrar(self):
+        tela_cadastro = TelaCadastrarLeitor(self)
+        self.wait_window(tela_cadastro)

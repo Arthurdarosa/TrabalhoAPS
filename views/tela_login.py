@@ -40,7 +40,6 @@ class TelaLogin(tk.Tk):
 
         frame_botoes = tk.Frame(self)
         tk.Button(frame_botoes, text="Entrar", command=self.entrar).pack(side=tk.LEFT, padx=5)
-        tk.Button(frame_botoes, text="Cadastrar leitor", command=self.cadastrar).pack(side=tk.LEFT, padx=5)
         tk.Button(frame_botoes, text="Sair", command=self.sair).pack(side=tk.LEFT, padx=5)
         frame_botoes.pack()
         
@@ -63,11 +62,6 @@ class TelaLogin(tk.Tk):
             self.resultado = {'tipo': 'Administrador', 'nome': email}
             self.destroy()
 
-    def cadastrar(self):
-        """Abre a tela de cadastro de leitores."""
-        from views.tela_cadastrar_leitor import TelaCadastrarLeitor
-        tela_cadastro = TelaCadastrarLeitor(self)
-        self.wait_window(tela_cadastro)
 
     def sair(self):
         self.resultado = {'tipo': 'SAIR', 'nome': None}

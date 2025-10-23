@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
-from controllers.leitor_controller import LeitorController
+from controllers.leitor_controller import LeitorController # Mantém
 
+# (Função centralizar_janela... fica igual)
 def centralizar_janela(janela):
-    """Centraliza a janela na tela."""
     janela.update_idletasks()
     largura = janela.winfo_width()
     altura = janela.winfo_height()
@@ -17,86 +17,97 @@ class TelaCadastrarLeitor(tk.Toplevel):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
-        self.controller = LeitorController()
+        
+        # O controller é instanciado aqui, mas SÓ
+        # a TelaConfirmacaoLeitor vai usá-lo
+        # (Embora, idealmente, o controller devesse ser
+        # passado do 'parent' em vez de criar um novo)
+        self.controller = LeitorController() 
+        
         self.leitor_temporario = None 
         
         self.title("Cadastrar Leitor")
         self.geometry("500x700")
         self.resizable(False, False)
         
-        # Configurar para fechar apenas esta janela
         self.protocol("WM_DELETE_WINDOW", self.fechar)
         
         self.criar_interface()
         centralizar_janela(self)
-    
+        
+        # Estas linhas são importantes para fazer a tela "modal"
+        self.transient(parent)
+        self.grab_set()
+
     def criar_interface(self):
         """Cria a interface da tela."""
+        # (Todo o seu código de 'criar_interface' está PERFEITO)
+        # ... (Label, Entry, Botões, etc.) ...
         titulo = tk.Label(self, text="Cadastrar Novo Leitor", 
-                         font=('Helvetica', 16, 'bold'))
+                          font=('Helvetica', 16, 'bold'))
         titulo.pack(pady=20)
         
         frame_principal = tk.Frame(self)
         frame_principal.pack(pady=10, padx=20, fill='both', expand=True)
         
         tk.Label(frame_principal, text="Nome Completo:", 
-                font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
+                 font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
         self.entry_nome = tk.Entry(frame_principal, width=40, font=('Helvetica', 10))
         self.entry_nome.pack(anchor='w', pady=(0, 10))
         
         tk.Label(frame_principal, text="Email:", 
-                font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
+                 font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
         self.entry_email = tk.Entry(frame_principal, width=40, font=('Helvetica', 10))
         self.entry_email.pack(anchor='w', pady=(0, 10))
 
         tk.Label(frame_principal, text="CPF:", 
-                font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
+                 font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
         self.entry_cpf = tk.Entry(frame_principal, width=40, font=('Helvetica', 10))
         self.entry_cpf.pack(anchor='w', pady=(0, 5))
         tk.Label(frame_principal, text="(Digite apenas números ou com formatação: 000.000.000-00)", 
-                font=('Helvetica', 8), fg='gray').pack(anchor='w', pady=(0, 10))
+                 font=('Helvetica', 8), fg='gray').pack(anchor='w', pady=(0, 10))
         
         tk.Label(frame_principal, text="Telefone:", 
-                font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
+                 font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
         self.entry_telefone = tk.Entry(frame_principal, width=40, font=('Helvetica', 10))
         self.entry_telefone.pack(anchor='w', pady=(0, 5))
         tk.Label(frame_principal, text="(Digite apenas números ou com formatação: (00) 00000-0000)", 
-                font=('Helvetica', 8), fg='gray').pack(anchor='w', pady=(0, 10))
+                 font=('Helvetica', 8), fg='gray').pack(anchor='w', pady=(0, 10))
         
         tk.Label(frame_principal, text="Senha:", 
-                font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
+                 font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
         self.entry_senha = tk.Entry(frame_principal, width=40, show="*", font=('Helvetica', 10))
         self.entry_senha.pack(anchor='w', pady=(0, 5))
         tk.Label(frame_principal, text="(Mínimo 6 caracteres)", 
-                font=('Helvetica', 8), fg='gray').pack(anchor='w', pady=(0, 10))
+                 font=('Helvetica', 8), fg='gray').pack(anchor='w', pady=(0, 10))
         
         tk.Label(frame_principal, text="Confirmar Senha:", 
-                font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
+                 font=('Helvetica', 10, 'bold')).pack(anchor='w', pady=(10, 5))
         self.entry_confirmar_senha = tk.Entry(frame_principal, width=40, show="*", font=('Helvetica', 10))
         self.entry_confirmar_senha.pack(anchor='w', pady=(0, 20))
         
         btn_confirmar = tk.Button(self, text="Confirmar", 
-                                 command=self.confirmar_dados, width=15, height=2,
-                                 bg='#4CAF50', fg='white', font=('Helvetica', 10, 'bold'))
+                                  command=self.confirmar_dados, width=15, height=2,
+                                  bg='#4CAF50', fg='white', font=('Helvetica', 10, 'bold'))
         btn_confirmar.pack(side=tk.LEFT, padx=10, pady=20)
         
         btn_limpar = tk.Button(self, text="Limpar", 
-                              command=self.limpar_campos, width=15, height=2,
-                              bg='#FF9800', fg='white', font=('Helvetica', 10, 'bold'))
+                               command=self.limpar_campos, width=15, height=2,
+                               bg='#FF9800', fg='white', font=('Helvetica', 10, 'bold'))
         btn_limpar.pack(side=tk.LEFT, padx=10, pady=20)
 
         btn_voltar = tk.Button(self, text="Voltar", 
-                              command=self.fechar, width=15, height=2,
-                              bg='#f44336', fg='white', font=('Helvetica', 10, 'bold'))
+                               command=self.fechar, width=15, height=2,
+                               bg='#f44336', fg='white', font=('Helvetica', 10, 'bold'))
         btn_voltar.pack(side=tk.LEFT, padx=10, pady=20)
         
-        print("Botões criados: Confirmar, Limpar, Voltar")  # Debug
-        
-        # Configurar foco inicial
         self.entry_nome.focus()
     
     def confirmar_dados(self):
-        """Valida e armazena temporariamente os dados do leitor."""
+        """
+        Valida APENAS o preenchimento e se as senhas batem.
+        NÃO FAZ validação de negócio (formato, duplicidade).
+        """
 
         nome = self.entry_nome.get().strip()
         email = self.entry_email.get().strip()
@@ -105,7 +116,7 @@ class TelaCadastrarLeitor(tk.Toplevel):
         senha = self.entry_senha.get()
         confirmar_senha = self.entry_confirmar_senha.get()
         
-
+        # 1. Validações que são PURAMENTE da View
         if not nome:
             messagebox.showerror("Erro", "Nome é obrigatório!")
             self.entry_nome.focus()
@@ -136,27 +147,16 @@ class TelaCadastrarLeitor(tk.Toplevel):
             self.entry_confirmar_senha.focus()
             return
         
+        # --- REMOVIDO ---
+        # AQUI ESTAVA A "BAGUNÇA". O Controller fará isso
+        # depois que o usuário confirmar na próxima tela.
+        #
+        # if not self.controller.validar_email(email): ...
+        # if self.controller.email_ja_existe(email): ...
+        # if not self.controller.validar_cpf(cpf): ...
+        # if self.controller.cpf_ja_existe(cpf): ...
 
-        if not self.controller.validar_email(email):
-            messagebox.showerror("Erro", "Email inválido!")
-            self.entry_email.focus()
-            return
-        
-        if self.controller.email_ja_existe(email):
-            messagebox.showerror("Erro", "Email já cadastrado!")
-            self.entry_email.focus()
-            return
-        
-        if not self.controller.validar_cpf(cpf):
-            messagebox.showerror("Erro", "CPF inválido!")
-            self.entry_cpf.focus()
-            return
-        
-        if self.controller.cpf_ja_existe(cpf):
-            messagebox.showerror("Erro", "CPF já cadastrado!")
-            self.entry_cpf.focus()
-            return
-
+        # 2. Se passou nas validações da View, guarda os dados brutos
         self.leitor_temporario = {
             'nome': nome,
             'email': email,
@@ -165,12 +165,14 @@ class TelaCadastrarLeitor(tk.Toplevel):
             'senha': senha
         }
         
-        # Abre tela de confirmação
+        # 3. Abre a tela de confirmação (que vai chamar o controller)
         self.abrir_tela_confirmacao()
     
     def abrir_tela_confirmacao(self):
         """Abre a tela de confirmação dos dados."""
-        TelaConfirmacaoLeitor(self, self.leitor_temporario)
+        # Passa a si mesma (self) como 'parent'
+        # e o controller (self.controller) para a próxima tela
+        TelaConfirmacaoLeitor(self, self.leitor_temporario, self.controller)
     
     def limpar_campos(self):
         """Limpa todos os campos do formulário."""
@@ -190,42 +192,43 @@ class TelaCadastrarLeitor(tk.Toplevel):
 class TelaConfirmacaoLeitor(tk.Toplevel):
     """Tela para confirmar os dados do leitor antes de salvar."""
     
-    def __init__(self, parent, dados_leitor):
+    # MODIFICADO: Aceita o controller vindo da tela pai
+    def __init__(self, parent, dados_leitor, controller: LeitorController):
         super().__init__(parent)
         self.parent = parent
         self.dados_leitor = dados_leitor
-        self.controller = LeitorController()
+        
+        # USA o controller da tela anterior, não cria um novo
+        self.controller = controller 
         
         self.title("Confirmar Cadastro")
         self.geometry("500x400")
         self.resizable(False, False)
         
-        # Configurar para fechar apenas esta janela
         self.protocol("WM_DELETE_WINDOW", self.fechar)
         
         self.criar_interface()
         centralizar_janela(self)
-    
+        
+        # Modal
+        self.transient(parent)
+        self.grab_set()
+
     def criar_interface(self):
-        """Cria a interface da tela de confirmação."""
-        # Título
+        # (Interface está PERFEITA, sem mudanças)
         titulo = tk.Label(self, text="Confirmar Dados do Leitor", 
-                         font=('Helvetica', 16, 'bold'))
+                          font=('Helvetica', 16, 'bold'))
         titulo.pack(pady=20)
         
-        # Frame principal
         frame_principal = tk.Frame(self)
         frame_principal.pack(pady=10, padx=20, fill='both', expand=True)
         
-        # Título da seção
         tk.Label(frame_principal, text="Revise os dados antes de confirmar:", 
-                font=('Helvetica', 12, 'bold')).pack(anchor='w', pady=(0, 15))
+                 font=('Helvetica', 12, 'bold')).pack(anchor='w', pady=(0, 15))
         
-        # Frame dos dados
         frame_dados = tk.Frame(frame_principal, relief=tk.RAISED, bd=2)
         frame_dados.pack(fill='both', expand=True, pady=(0, 20))
         
-        # Exibir dados do leitor
         dados_texto = f"""
         Nome: {self.dados_leitor['nome']}
         Email: {self.dados_leitor['email']}
@@ -234,32 +237,31 @@ class TelaConfirmacaoLeitor(tk.Toplevel):
         """
         
         tk.Label(frame_dados, text=dados_texto, 
-                font=('Helvetica', 11), justify=tk.LEFT).pack(pady=20, padx=20)
+                 font=('Helvetica', 11), justify=tk.LEFT).pack(pady=20, padx=20)
         
-        # Frame dos botões
         frame_botoes = tk.Frame(frame_principal)
         frame_botoes.pack(pady=10)
         
-        # Botão Salvar
         btn_salvar = tk.Button(frame_botoes, text="Salvar Leitor", 
-                              command=self.salvar_leitor, width=15, height=2,
-                              bg='#4CAF50', fg='white', font=('Helvetica', 10, 'bold'))
+                               command=self.salvar_leitor, width=15, height=2,
+                               bg='#4CAF50', fg='white', font=('Helvetica', 10, 'bold'))
         btn_salvar.pack(side=tk.LEFT, padx=10)
         
-        # Botão Editar
         btn_editar = tk.Button(frame_botoes, text="Editar Dados", 
-                              command=self.editar_dados, width=15, height=2,
-                              bg='#FF9800', fg='white', font=('Helvetica', 10, 'bold'))
+                               command=self.editar_dados, width=15, height=2,
+                               bg='#FF9800', fg='white', font=('Helvetica', 10, 'bold'))
         btn_editar.pack(side=tk.LEFT, padx=10)
         
-        # Botão Cancelar
         btn_cancelar = tk.Button(frame_botoes, text="Cancelar", 
-                                command=self.fechar, width=15, height=2,
-                                bg='#f44336', fg='white', font=('Helvetica', 10, 'bold'))
+                                 command=self.fechar, width=15, height=2,
+                                 bg='#f44336', fg='white', font=('Helvetica', 10, 'bold'))
         btn_cancelar.pack(side=tk.LEFT, padx=10)
     
     def salvar_leitor(self):
-        """Salva o leitor definitivamente."""
+        """
+        Salva o leitor definitivamente.
+        AQUI é onde o controller é chamado e faz a validação real.
+        """
         sucesso, mensagem = self.controller.cadastrar_leitor(
             self.dados_leitor['nome'],
             self.dados_leitor['email'],
@@ -270,10 +272,14 @@ class TelaConfirmacaoLeitor(tk.Toplevel):
         
         if sucesso:
             messagebox.showinfo("Sucesso", mensagem)
-            self.parent.limpar_campos()  # Limpa o formulário original
-            self.destroy()
+            self.parent.limpar_campos() # Limpa o formulário original
+            self.fechar()              # Fecha esta tela (confirmação)
+            self.parent.fechar()       # Fecha a tela de cadastro
         else:
+            # AQUI o Model (via Controller) vai reportar os erros
+            # (Email inválido, CPF inválido, Email já existe, etc.)
             messagebox.showerror("Erro", mensagem)
+            # NÃO fecha, permite ao usuário clicar em "Editar"
     
     def editar_dados(self):
         """Volta para a tela de edição."""

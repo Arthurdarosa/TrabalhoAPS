@@ -1,37 +1,38 @@
 [
   {
-    "nome": "a1",
-    "email": "a@abrga.com",
-    "CPF": 45970638030,
-    "senha_hash": "hashed_123456_salt",
-    "telefone": 48920008692
+    "_Usuario__nome": "João Silva",
+    "_Usuario__email": "joao@teste.com",
+    "_Usuario__CPF": 11144477735,
+    "_Usuario__senha_hash": "hashed_minhasenha123_salt",
+    "_Usuario__telefone": 11999999988
   },
   {
-    "nome": "João Silva",
-    "email": "joao@teste.com",
-    "CPF": 11144477735,
-    "senha_hash": "hashed_minhasenha123_salt",
-    "telefone": 11999999988
+    "_Usuario__nome": "aaa",
+    "_Usuario__email": "abcded@a.com",
+    "_Usuario__CPF": 49668335074,
+    "_Usuario__senha_hash": "hashed_afffff_salt",
+    "_Usuario__telefone": 482456
   },
   {
-    "nome": "aaa",
-    "email": "abcded@a.com",
-    "CPF": 49668335074,
-    "senha_hash": "hashed_afffff_salt",
-    "telefone": 482456
+    "_Usuario__nome": "arthur",
+    "_Usuario__email": "abaorubgaro@a.com",
+    "_Usuario__CPF": 9428030945,
+    "_Usuario__senha_hash": "hashed_aaaaaa_salt",
+    "_Usuario__telefone": 3927749
   },
   {
-    "nome": "arthur",
-    "email": "abaorubgaro@a.com",
-    "CPF": 9428030945,
-    "senha_hash": "hashed_aaaaaa_salt",
-    "telefone": 3927749
+    "_Usuario__nome": "testea",
+    "_Usuario__email": "teste@teste.coma",
+    "_Usuario__CPF": 12253248908,
+    "_Usuario__senha_hash": "hashed_111111_salt",
+    "_Usuario__telefone": 1111
   },
   {
-    "nome": "testea",
-    "email": "teste@teste.coma",
-    "CPF": 12253248908,
-    "senha_hash": "hashed_111111_salt",
-    "telefone": 1111
+    "_Usuario__nome": "bbb",
+    "_Usuario__email": "anrfopan@aonrcaa.com",
+    "_Usuario__CPF": 53747153054,
+    "_Usuario__senha_hash": "hashed_abcdef_salt",
+    "_Usuario__telefone": 22555554444,
+    "senha": "abcdef"
   }
 ]

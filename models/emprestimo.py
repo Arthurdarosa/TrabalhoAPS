@@ -18,7 +18,7 @@ class Emprestimo:
         self.__data_devolucao_prevista = self.__data_emprestimo + timedelta(days=14)
         
         # O status inicial é sempre "Ativo"
-        self.estado = "busca pendente"
+        self.estado = "pendente"
 
     # --- Properties (Getters) ---
     @property
@@ -56,7 +56,7 @@ class Emprestimo:
             
     @status.setter
     def status(self, status: str):
-        allowed_statuses = ["Ativo", "Atrasado", "Devolvido"]
+        allowed_statuses = ["Ativo", "Atrasado", "Devolvido", "pendente"]
         if isinstance(status, str) and status in allowed_statuses:
             self.__status = status
         else:

@@ -1,7 +1,8 @@
+# controllers/leitor_controller.py
 import json
 import os
 from typing import List, Optional
-from models.leitor import Leitor
+from models.leitor import Leitor # Importa o novo Leitor
 
 class LeitorController:
     """Controller responsável por gerenciar operações relacionadas a leitores."""
@@ -13,7 +14,7 @@ class LeitorController:
         self._carregar_leitores()
     
     def _criar_diretorio_se_nao_existir(self):
-        """Cria o diretório de dados se não existir."""
+        # (Idêntico, sem mudanças)
         diretorio = os.path.dirname(self.arquivo_dados)
         if diretorio and not os.path.exists(diretorio):
             os.makedirs(diretorio)
@@ -26,132 +27,89 @@ class LeitorController:
                     dados = json.load(f)
                     for leitor_data in dados:
                         try:
+                            # Agora usamos o from_stored_data que está no Model!
                             leitor = Leitor.from_stored_data(
-                                nome=leitor_data['nome'],
-                                email=leitor_data['email'],
-                                CPF=leitor_data['CPF'],
-                                senha_hash=leitor_data['senha_hash'],
-                                telefone=leitor_data['telefone']
+                                nome=leitor_data['_Usuario__nome'],
+                                email=leitor_data['_Usuario__email'],
+                                CPF=leitor_data['_Usuario__CPF'],
+                                senha_hash=leitor_data['_Usuario__senha_hash'],
+                                telefone=leitor_data['_Usuario__telefone']
                             )
+                            # (Aqui viria a lógica para recarregar os empréstimos e filas)
                             self.leitores.append(leitor)
                         except (KeyError, ValueError) as e_item:
                             print(f"Registro de leitor inválido ignorado: {e_item}")
             except (json.JSONDecodeError, OSError) as e:
                 print(f"Erro ao carregar arquivo de leitores: {e}")
                 self.leitores = []
-    
+        
     def _salvar_leitores(self):
         """Salva leitores no arquivo JSON."""
         try:
-            dados = []
-            for leitor in self.leitores:
-                dados.append({
-                    'nome': leitor.nome,
-                    'email': leitor.email,
-                    'CPF': leitor.CPF,
-                    'senha_hash': leitor._Usuario__senha_hash,
-                    'telefone': leitor.telefone
-                })
+            # vars(leitor) retorna o dicionário de atributos do objeto
+            dados = [vars(leitor) for leitor in self.leitores]
             
             with open(self.arquivo_dados, 'w', encoding='utf-8') as f:
                 json.dump(dados, f, indent=2, ensure_ascii=False)
         except Exception as e:
             print(f"Erro ao salvar leitores: {e}")
     
-    def validar_cpf(self, cpf: str) -> bool:
-        """Valida CPF usando algoritmo oficial."""
-        # Remove caracteres não numéricos
-        cpf = ''.join(filter(str.isdigit, cpf))
-        
-        # Verifica se tem 11 dígitos
-        if len(cpf) != 11:
-            return False
-        
-        # Verifica se todos os dígitos são iguais
-        if cpf == cpf[0] * 11:
-            return False
-        
-        # Calcula o primeiro dígito verificador
-        soma = sum(int(cpf[i]) * (10 - i) for i in range(9))
-        resto = soma % 11
-        digito1 = 0 if resto < 2 else 11 - resto
-        
-        # Calcula o segundo dígito verificador
-        soma = sum(int(cpf[i]) * (11 - i) for i in range(10))
-        resto = soma % 11
-        digito2 = 0 if resto < 2 else 11 - resto
-        
-        # Verifica se os dígitos calculados coincidem com os fornecidos
-        return cpf[9] == str(digito1) and cpf[10] == str(digito2)
+    # --- MÉTODOS DE VALIDAÇÃO REMOVIDOS ---
+    # validar_cpf() -> FOI PARA O MODELO
+    # validar_email() -> FOI PARA O MODELO
     
-    def validar_email(self, email: str) -> bool:
-        """Valida formato de email."""
-        import re
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        return re.match(pattern, email) is not None
+    # --- Métodos de Checagem (Ficam no Controller) ---
     
     def email_ja_existe(self, email: str) -> bool:
-        """Verifica se email já está cadastrado."""
+        """Verifica se email já está cadastrado (lógica de repositório)."""
         return any(leitor.email.lower() == email.lower() for leitor in self.leitores)
     
     def cpf_ja_existe(self, cpf: str) -> bool:
-        """Verifica se CPF já está cadastrado."""
-        cpf_limpo = ''.join(filter(str.isdigit, cpf))
-        return any(str(leitor.CPF) == cpf_limpo for leitor in self.leitores)
+        """Verifica se CPF já está cadastrado (lógica de repositório)."""
+        cpf_limpo = int(''.join(filter(str.isdigit, cpf)))
+        return any(leitor.CPF == cpf_limpo for leitor in self.leitores)
+    
+    # --- Métodos de Caso de Uso (Refatorados) ---
     
     def cadastrar_leitor(self, nome: str, email: str, cpf: str, senha: str, telefone: str) -> tuple[bool, str]:
         """
         Cadastra um novo leitor.
-        Retorna (sucesso, mensagem)
+        O controller agora SÓ orquestra e captura erros do Model.
         """
         try:
-            # Validações
-            if not nome.strip():
-                return False, "Nome é obrigatório."
-            
-            if not self.validar_email(email):
-                return False, "Email inválido."
-            
             if self.email_ja_existe(email):
                 return False, "Email já cadastrado."
-            
-            if not self.validar_cpf(cpf):
-                return False, "CPF inválido."
             
             if self.cpf_ja_existe(cpf):
                 return False, "CPF já cadastrado."
             
-            if len(senha) < 6:
-                return False, "Senha deve ter pelo menos 6 caracteres."
-            
-            if not telefone.strip():
-                return False, "Telefone é obrigatório."
-            
-            # Converte CPF para int (remove formatação)
+            # 2. Limpeza de dados (preparação para o model)
             cpf_limpo = int(''.join(filter(str.isdigit, cpf)))
             telefone_int = int(''.join(filter(str.isdigit, telefone)))
+        
+            leitor = Leitor(nome, email, cpf_limpo, senha, telefone_int)
             
-            # Cria o leitor
-            leitor = Leitor(nome.strip(), email.strip(), cpf_limpo, senha, telefone_int)
+            # 4. Se passou, salva.
             self.leitores.append(leitor)
             self._salvar_leitores()
             
             return True, "Leitor cadastrado com sucesso!"
             
         except ValueError as e:
-            return False, f"Erro de validação: {str(e)}"
+            # 5. Captura o erro de validação vindo do MODEL
+            return False, f"{str(e)}"
         except Exception as e:
             return False, f"Erro interno: {str(e)}"
     
     def buscar_leitor_por_email(self, email: str) -> Optional[Leitor]:
-        """Busca leitor por email."""
+        # (Idêntico, sem mudanças)
         for leitor in self.leitores:
             if leitor.email.lower() == email.lower():
                 return leitor
         return None
     
     def listar_leitores(self) -> List[Leitor]:
-        """Retorna lista de todos os leitores."""
+        # (Idêntico, sem mudanças)
         return self.leitores.copy()
 
     def atualizar_leitor(
@@ -164,54 +122,45 @@ class LeitorController:
         senha: Optional[str] = None,
     ) -> tuple[bool, str]:
         """
-        Atualiza dados de um leitor identificado pelo email_original.
-        Campos None não são alterados. Senha vazia ("") também não altera.
-        Retorna (sucesso, mensagem).
+        Atualiza dados de um leitor.
+        A lógica de validação agora está nos SETTERS do Model.
         """
         try:
             leitor = self.buscar_leitor_por_email(email_original)
             if not leitor:
                 return False, "Leitor não encontrado."
 
-            # Nome
+            # Tenta aplicar as mudanças.
+            # Cada 'leitor.campo = valor' vai disparar o SETTER
+            # do modelo, que fará a validação.
+            
             if nome is not None:
-                nome_limpo = nome.strip()
-                if not nome_limpo:
-                    return False, "Nome é obrigatório."
-                leitor.nome = nome_limpo
+                leitor.nome = nome # Dispara @nome.setter
 
-            # Email
             if email is not None and email.strip().lower() != email_original.strip().lower():
-                if not self.validar_email(email):
-                    return False, "Email inválido."
+                # Checagem de repositório
                 if self.email_ja_existe(email):
                     return False, "Email já cadastrado."
-                leitor.email = email.strip()
+                leitor.email = email # Dispara @email.setter
 
-            # Telefone
             if telefone is not None:
-                telefone_str = str(telefone)
-                telefone_int = int(''.join(filter(str.isdigit, telefone_str)))
-                leitor.telefone = telefone_int
+                telefone_int = int(''.join(filter(str.isdigit, str(telefone))))
+                leitor.telefone = telefone_int # Dispara @telefone.setter
 
-            # Senha (opcional)
-            if senha is not None and senha != "":
-                if len(senha) < 6:
-                    return False, "Senha deve ter pelo menos 6 caracteres."
-                # Regerar hash através do construtor privado
-                # Truque: criar um hash novo usando o método de verificação
-                # Não há setter público, então reaproveitamos a lógica da classe base
-                leitor._Usuario__senha_hash = leitor._gerar_hash(senha)
+            if senha: # Se senha não for None ou ""
+                leitor.senha = senha # Dispara @senha.setter (que gera o hash)
 
             self._salvar_leitores()
             return True, "Leitor atualizado com sucesso!"
+        
         except ValueError as e:
-            return False, f"Erro de validação: {str(e)}"
+            # Captura erros de validação vindos dos SETTERS
+            return False, f"{str(e)}"
         except Exception as e:
             return False, f"Erro interno: {str(e)}"
 
     def excluir_leitor_por_email(self, email: str) -> tuple[bool, str]:
-        """Exclui um leitor pelo email. Retorna (sucesso, mensagem)."""
+        # (Idêntico, sem mudanças)
         try:
             for i, leitor in enumerate(self.leitores):
                 if leitor.email.lower() == email.lower():
