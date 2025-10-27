@@ -1,25 +1,32 @@
+# emprestimo.py
 from __future__ import annotations
 from datetime import datetime, timedelta
-from estado import StatusEmprestimo
-from .livro import Livro
-from .leitor import Leitor
+from .estado import StatusEmprestimo
+from .livro import Livro  # Importando o mock
+from .leitor import Leitor # Importando o mock
+import itertools # Para gerar IDs únicos
+
+# Contador simples para IDs de empréstimo (simulando um AUTO_INCREMENT)
+id_counter = itertools.count(1)
 
 class Emprestimo:
-    """
-    Representa o ato de um Leitor pegar um Livro emprestado.
-    Valida os tipos de dados e encapsula o estado.
-    """
     def __init__(self, livro: Livro, leitor: Leitor):
+        
+        # --- NOVO: ID do Empréstimo ---
+        self.id = next(id_counter) 
+        
         self.livro = livro
         self.leitor = leitor
         
-        self.__data_emprestimo = datetime.now()
-        self.__data_devolucao_prevista = self.__data_emprestimo + timedelta(days=14)
+        # A data de empréstimo SÓ SERÁ DEFINIDA NA COLETA
+        self.__data_emprestimo = None
+        self.__data_devolucao_prevista = None
         
-        # O status inicial agora usa o Enum
+        # O status inicial é PENDENTE (aguardando coleta)
         self.status = StatusEmprestimo.PENDENTE
 
-    # --- Properties (Getters) ---
+    # ... (properties de livro e leitor não mudam) ...
+    
     @property
     def livro(self) -> Livro:
         return self.__livro
@@ -29,18 +36,17 @@ class Emprestimo:
         return self.__leitor
     
     @property
-    def data_emprestimo(self) -> datetime:
+    def data_emprestimo(self) -> datetime | None: # Pode ser None
         return self.__data_emprestimo
         
     @property
-    def data_devolucao_prevista(self) -> datetime:
+    def data_devolucao_prevista(self) -> datetime | None: # Pode ser None
         return self.__data_devolucao_prevista
 
     @property
-    def status(self) -> StatusEmprestimo:  # <-- Tipo de retorno atualizado
+    def status(self) -> StatusEmprestimo:
         return self.__status
 
-    # --- Setters com Validação ---
     @livro.setter
     def livro(self, livro: Livro):
         if not isinstance(livro, Livro):
@@ -54,30 +60,33 @@ class Emprestimo:
         self.__leitor = leitor
             
     @status.setter
-    def status(self, status: StatusEmprestimo): # <-- Tipo de entrada atualizado
-        # A validação agora é muito mais simples e segura
+    def status(self, status: StatusEmprestimo):
         if not isinstance(status, StatusEmprestimo):
             raise TypeError("Status deve ser um membro de StatusEmprestimo Enum.")
         self.__status = status
             
-    # --- Métodos de Domínio (Lógica de Negócio) ---
+    # --- NOVO MÉTODO DE NEGÓCIO ---
+    def ativar_coleta(self):
+        """
+        Confirma a coleta do livro pelo leitor.
+        Muda o status para ATIVO e define as datas de empréstimo.
+        """
+        if self.status != StatusEmprestimo.PENDENTE:
+            raise ValueError(f"Este empréstimo não está pendente. Status atual: {self.status.value}")
+            
+        print(f"INFO: Ativando coleta do Empréstimo ID {self.id}...")
+        self.status = StatusEmprestimo.ATIVO
+        self.__data_emprestimo = datetime.now()
+        self.__data_devolucao_prevista = self.__data_emprestimo + timedelta(days=14)
+        print(f"INFO: Empréstimo {self.id} agora está ATIVO. Devolução em: {self.__data_devolucao_prevista.strftime('%d/%m/%Y')}")
+
     def registrar_devolucao(self):
-        """
-        Muda o status do empréstimo para 'Devolvido'.
-        """
-        print(f"INFO: Registrando devolução de '{self.livro.titulo}' por '{self.leitor.nome}'.")
-        # Usando o Enum
+        # ... (seu método original) ...
         self.status = StatusEmprestimo.DEVOLVIDO
 
     def verificar_atraso(self) -> bool:
-        """
-        Verifica se o empréstimo está atrasado e atualiza o status se necessário.
-        """
-        # Comparação usando o Enum
-        # (Mantendo a lógica que discutimos: só fica atrasado se estava Ativo)
+        # ... (seu método original) ...
         if self.status == StatusEmprestimo.ATIVO and datetime.now() > self.data_devolucao_prevista:
             self.status = StatusEmprestimo.ATRASADO
             return True
-        
-        # Verificação usando o Enum
         return self.status == StatusEmprestimo.ATRASADO

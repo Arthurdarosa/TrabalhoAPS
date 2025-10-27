@@ -1,8 +1,10 @@
 from __future__ import annotations
 from datetime import datetime
 from typing import List
-from .livro import Livro
-from .leitor import Leitor
+from typing import List, TYPE_CHECKING
+if TYPE_CHECKING:
+    from .livro import Livro
+    from .leitor import Leitor
 
 class Fila:    
     def __init__(self, livro: Livro):

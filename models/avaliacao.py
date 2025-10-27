@@ -1,7 +1,10 @@
 from __future__ import annotations
 from datetime import datetime
-from .leitor import Leitor
-from .livro import Livro
+from typing import List, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .leitor import Leitor
+    from .livro import Livro
 
 class Avaliacao:
     """

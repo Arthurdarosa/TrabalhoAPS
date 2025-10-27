@@ -1,7 +1,7 @@
 [
   {
     "_Usuario__nome": "João Silva",
-    "_Usuario__email": "joao@teste.com",
+    "_Usuario__email": "joao@teste.co",
     "_Usuario__CPF": 11144477735,
     "_Usuario__senha_hash": "hashed_minhasenha123_salt",
     "_Usuario__telefone": 11999999982

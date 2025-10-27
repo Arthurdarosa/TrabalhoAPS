@@ -6,6 +6,7 @@ from views.tela_gerenciar_leitores import TelaGerenciarLeitores
 from views.tela_gerenciar_admins import TelaGerenciarAdmins
 from views.tela_relatorios import TelaRelatorios
 from views.tela_cadastrar_leitor import TelaCadastrarLeitor
+from views.tela_efetuar_emprestimo import TelaRegistraremprestimo
 
 def centralizar_janela(janela):
     # (função de centralizar aqui)
@@ -32,21 +33,23 @@ class TelaAdmin(tk.Tk):
         tk.Button(self, text="Cadastrar leitor", width=25, height=2, command=self.cadastrar).pack(pady=5)
         tk.Button(self, text="devolução de Empréstimos", width=25, height=2, command=self.abrir_tela_emprestimos_devolucao).pack(pady=5)
         tk.Button(self, text="Gerar Relatórios", width=25, height=2, command=self.abrir_tela_relatorios).pack(pady=5)
+        tk.Button(self, text="efetuar emprestimo", width=25, height=2, command=self.abrir_tela_emprestimo).pack(pady=5)
 
         tk.Button(self, text="Logout", command=self.destroy).pack(side=tk.BOTTOM, pady=20)
         centralizar_janela(self)
 
-    # Métodos para abrir as telas de livros (já existentes)
     def abrir_tela_cadastro_livro(self):
         self.wait_window(TelaCadastrarLivro(self))
+    
     def abrir_tela_gerenciar_livros(self):
         self.wait_window(TelaGerenciarLivros(self))
+    
     def abrir_tela_emprestimos_devolucao(self):
         self.wait_window(TelaDevolverEmprestimo(self))
-
-    # --- NOVOS MÉTODOS ---
+    
     def abrir_tela_gerenciar_leitores(self):
         self.wait_window(TelaGerenciarLeitores(self))
+
     def abrir_tela_gerenciar_admins(self):
         self.wait_window(TelaGerenciarAdmins(self))
 
@@ -57,3 +60,7 @@ class TelaAdmin(tk.Tk):
     def cadastrar(self):
         tela_cadastro = TelaCadastrarLeitor(self)
         self.wait_window(tela_cadastro)
+
+    def abrir_tela_emprestimo(self):
+        tela_emprestimo = TelaRegistraremprestimo(self)
+        self.wait_window(tela_emprestimo)

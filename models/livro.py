@@ -50,12 +50,12 @@ class Livro:
 
 
     @property
-    def quantidade_total(self) -> str:
+    def quantidade_total(self) -> int:
         return self.__quantidade_total
 
     @quantidade_total.setter
-    def quantidade_total(self, quantidade_total: str):
-        if isinstance(quantidade_total, str) and quantidade_total.strip():
+    def quantidade_total(self, quantidade_total: int):
+        if isinstance(quantidade_total, int) and quantidade_total >= 0:
             self.__quantidade_total = quantidade_total
         else:
             raise ValueError("quantidade total deve ser um int.")

@@ -51,6 +51,8 @@ class TelaEditarLivro(tk.Toplevel):
         frame_botoes = tk.Frame(self)
         frame_botoes.pack(pady=10)
         tk.Button(frame_botoes, text="Salvar Alterações", command=self.salvar).pack(side=tk.LEFT, padx=10)
+        tk.Button(frame_botoes, text="excluir livro", command=self.salvar).pack(side=tk.LEFT, padx=10)
+
         tk.Button(frame_botoes, text="Cancelar", command=self.destroy).pack(side=tk.LEFT, padx=10)
         
         # --- ADICIONADO: Finalização da janela (centralizar e tornar modal) ---

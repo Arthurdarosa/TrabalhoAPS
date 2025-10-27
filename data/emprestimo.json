@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "status": "ATIVO",
+    "data_emprestimo": "2025-10-27T09:27:11.626326",
+    "data_devolucao_prevista": "2025-11-10T09:27:11.626326",
+    "livro": {
+      "_Livro__titulo": "Duna",
+      "_Livro__autor": "Frank Herbert",
+      "_Livro__genero": "Ficção Científica",
+      "_Livro__quantidade_total": 5
+    },
+    "leitor": {
+      "_Usuario__nome": "João Silva",
+      "_Usuario__email": "joao@teste.co",
+      "_Usuario__CPF": 11144477735,
+      "_Usuario__telefone": 11999999982
+    }
+  },
+  {
+    "id": 2,
+    "status": "ATIVO",
+    "data_emprestimo": "2025-10-20T10:00:00",
+    "data_devolucao_prevista": "2025-11-03T10:00:00",
+    "livro": {
+      "_Livro__titulo": "1984",
+      "_Livro__autor": "George Orwell",
+      "_Livro__genero": "Distopia",
+      "_Livro__quantidade_total": 3
+    },
+    "leitor": {
+      "_Usuario__nome": "aaa",
+      "_Usuario__email": "abcded@a.com",
+      "_Usuario__CPF": 49668335074,
+      "_Usuario__telefone": 482456
+    }
+  }
+]

@@ -2,7 +2,7 @@
 import json
 import os
 from typing import List, Optional
-from models.leitor import Leitor # Importa o novo Leitor
+from models.leitor import Leitor 
 
 class LeitorController:
     """Controller responsável por gerenciar operações relacionadas a leitores."""
@@ -54,9 +54,6 @@ class LeitorController:
         except Exception as e:
             print(f"Erro ao salvar leitores: {e}")
     
-    # --- MÉTODOS DE VALIDAÇÃO REMOVIDOS ---
-    # validar_cpf() -> FOI PARA O MODELO
-    # validar_email() -> FOI PARA O MODELO
     
     # --- Métodos de Checagem (Ficam no Controller) ---
     

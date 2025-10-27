@@ -1,0 +1,89 @@
+@startuml RegistrarColeta
+' --- Configuração da Aparência ---
+skinparam monochrome true
+skinparam roundcorner 10
+skinparam style strictuml
+skinparam participantpadding 10
+skinparam boxpadding 20
+title Diagrama de Sequência: Registrar Coleta de Livro
+
+' --- Atores e Participantes ---
+actor ":Administrador" as Admin
+participant ":TelaAdmin" as View
+participant ":SistemaController" as Controller
+participant ":Emprestimo" as Model
+database ":emprestimo.json" as JSON
+
+' --- Fluxo de Busca (Pré-condição) ---
+Admin -> View: digitarID(id)
+Admin -> View: clicarBuscar()
+activate View
+View -> Controller: emprestimo = buscar_emprestimo_por_id(id)
+activate Controller
+
+alt [Empréstimo NÃO encontrado]
+    Controller --> View: retorna None
+    deactivate Controller
+    View -> View: mostrarMensagemErro("Empréstimo com esse ID não foi encontrado.")
+    View --> Admin: exibe pop-up "Aviso"
+    deactivate View
+
+else [Empréstimo ENCONTRADO]
+    Controller --> View: retorna emprestimo_obj
+    deactivate Controller
+    View -> View: exibirDadosNaLista(emprestimo_obj)
+    deactivate View
+
+    ' --- Fluxo Principal: Registrar Coleta ---
+    Admin -> View: clicarRegistrarColeta()
+    activate View
+    View -> Controller: registrar_coleta(id)
+    activate Controller
+
+    ' 1. Controller busca o empréstimo novamente
+    Controller -> Controller: buscar_emprestimo_por_id(id)
+    Controller --> Controller: retorna emprestimo_obj
+
+    ' 2. Controller chama a lógica de negócio no Modelo
+    Controller -> Model: ativar_coleta()
+    activate Model
+
+    ' --- Início da Decisão (Sucesso ou Erro) ---
+    alt [status == PENDENTE]
+        ' 3.a. Caminho de SUCESSO
+        Model -> Model: self.status = ATIVO
+        Model -> Model: self.data_emprestimo = datetime.now()
+        Model -> Model: self.data_devolucao_prevista = ...
+        Model --> Controller: retorna (sucesso)
+        deactivate Model
+        
+        ' 4. Controller salva a mudança
+        Controller -> Controller: _salvar_emprestimos()
+        activate Controller # Ativação para o método de salvar
+        Controller -> JSON: escrever(lista_serializada)
+        deactivate Controller # Desativa o _salvar
+        
+        Controller --> View: retorna emprestimo_atualizado_obj
+        deactivate Controller # Desativa o registrar_coleta
+        
+        ' 5. View informa o usuário
+        View -> View: mostrarMensagemSucesso("Coleta... registrada com sucesso!")
+        View --> Admin: exibe pop-up "Sucesso"
+        deactivate View
+
+    else [status != PENDENTE]
+        ' 3.b. Caminho de ERRO
+        Model --> Controller: levanta Excecao("O empréstimo não está pendente")
+        deactivate Model
+        
+        ' 4. Controller propaga o erro para a View
+        Controller --> View: propaga Excecao("O empréstimo não está pendente")
+        deactivate Controller # Desativa o registrar_coleta
+        
+        ' 5. View informa o usuário
+        View -> View: mostrarMensagemErro("O empréstimo não está pendente")
+        View --> Admin: exibe pop-up "Aviso"
+        deactivate View
+    end
+end
+@enduml
